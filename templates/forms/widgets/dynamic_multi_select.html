@@ -1,0 +1,160 @@
+<div id='selected_{{ widget.name }}'></div>
+<input type="text" value="" list="list_{{ widget.name }}" 
+    oninput="debounce(_search, 500)(event)" 
+    onchange="_append(event)" {% include "django/forms/widgets/attrs.html" %}/>
+<datalist id="list_{{ widget.name }}"></datalist>
+<span class="{{ widget.name }}_messages">Нет соединения с сервером</span>
+<select name="{{ widget.name }}" multiple style="display: none;"></select>
+
+<script>    
+
+    function debounce(f, ms) {
+
+        let isCooldown = false;
+
+        return function() {
+            if (isCooldown) return;
+
+            f.apply(this, arguments);
+
+            isCooldown = true;
+
+            setTimeout(() => isCooldown = false, ms);
+        };
+
+    }
+
+    var cache_tag = []
+
+    /**
+        Делает запрос на сервер для подгрузки ключевых тегов
+    */
+    function _search(event){        
+
+        var dl = document.getElementById('list_{{ widget.name }}');
+        dl.nextElementSibling().style = "display:none";
+
+        if (event.target.value){
+
+            if (cache_tag.indexOf(event.target.value) >= 0) return;
+            else{                
+                fetch('{{widget.url}}', {body: event.target.value})
+                    .then(response => {
+                        if (response.ok){
+                            cache_tag.push(event.target.value);
+                            return response.text().split(',')
+                        }
+                        else{
+                            console.warn('error _search: ' + response.status);
+                            alert('нет соединения с сервером') 
+                            dl.nextElementSibling().style = "display:inline-block";
+                            return [];
+                        }
+                    })
+                    .then(results => {                        
+                        for(let tag in results){
+                            let option = document.createElement('option');
+                            option.value = tag
+                            dl.appendChild(option)
+                        }
+                    });                
+            }
+
+        }
+    }
+
+
+    function _append(event){ // onchoice
+
+        var tag_swarm = document.getElementById('selected_{{ widget.name }}');
+        let flag = tag_swarm.querySelector('#' + '_tag_' + event.target.value);
+
+        if (!flag){
+
+            var selected_option = document.querySelector('#list_{{ widget.name }} option[value="'+event.target.value + '"]');
+            if (!selected_option) return;
+
+            let tag = document.createElement('div')
+            tag.innerText = event.target.value;
+            tag.className = '{{ widget.name }}_tag'; 
+            // tag.id = '{{ widget.name }}_tag_' + event.target.value;            
+            tag_swarm.appendChild(tag)     
+
+            let close = document.createElement('div');
+            close.className = 'close'; 
+            close.innerText = '+';
+            close.onclick = function() {
+                
+                let option = document.createElement('option');
+                option.value = tag.innerText.slice(0,-1).trim();
+                console.log(tag.innerText.slice(0,-1))
+                document.querySelector('#list_{{ widget.name }}').appendChild(option);
+
+                tag.parentNode.removeChild(tag);
+                // event.target.focus();
+            }
+            
+            tag.appendChild(close)                
+            selected_option.parentNode.removeChild(selected_option);
+            event.target.value = '';
+            event.target.focus();
+        }
+        else{
+            alert('уже выбран')
+        }
+
+    }    
+</script>
+
+
+<style>
+    .tag_swarm, .tag_swarm + input{
+        width: 500px;
+        box-sizing: border-box;
+        margin: 0 auto;
+        display: block;
+
+    }
+    .tag_swarm{
+        background-color: lightcyan;
+        min-height: 2.5em;
+        margin: 5px auto;
+        vertical-align: middle;
+        line-height: 1.5em;
+        border-radius: 15px;
+    }
+    .{{ widget.name }}_tag{
+        background-color: lightblue;
+        border-radius: 15px;
+        padding: 5px 30px 5px 10px;
+        margin: 5px 10px;
+        display: inline-block;
+        position: relative;
+        line-height: 1em;
+    }
+    .close{
+        position: absolute;
+        top: 0.46em;
+        display: inline-block;
+        right: 10px;
+        background-color: lightgreen;
+        opacity: 0.7;
+        cursor: pointer;
+        transform: rotate(45deg);
+        border-radius: 20px;
+        height: 1.1em; 
+        width: 1.1em;
+        text-align: center;
+        font-size: 0.85em;
+        transition: 0.5s;
+        box-shadow: 0 0 1px blue;
+
+    }
+    .close:hover{
+        box-shadow: 0 0 5px blue;
+        background-color: rgb(47, 214, 47);
+        color: red;
+
+        /*transform: rotate(405deg);*/
+    }
+</style>
