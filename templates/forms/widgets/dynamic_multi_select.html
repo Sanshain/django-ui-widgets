@@ -1,10 +1,36 @@
-<div id='selected_{{ widget.name }}'></div>
+
+<div id='selected_{{ widget.name }}'>
+
+    {% for group_name, group_choices, group_index in widget.optgroups %}
+        {% for option in group_choices %}            
+            <div class="labels_tag" id="{{ option.in_swarm_id }}">
+                {{ option.label }}
+                <div class="close" onclick="onRemove(event)">+</div>
+            </div>                     
+        {% endfor %}        
+    {% endfor %}
+
+</div>
 <input type="text" value="" list="list_{{ widget.name }}" 
     oninput="debounce(_search, 500)(event)" 
     onchange="_append(event)" {% include "django/forms/widgets/attrs.html" %}/>
 <datalist id="list_{{ widget.name }}"></datalist>
 <span class="{{ widget.name }}_messages">Нет соединения с сервером</span>
-<select name="{{ widget.name }}" multiple style="display: none;"></select>
+<select name="{{ widget.name }}" multiple style="display: none;"     
+    {% include "forms/widgets/default_attrs.html" %}>
+
+    {% for group_name, group_choices, group_index in widget.optgroups %}
+        {% for option in group_choices %}
+            {% include "django/forms/widgets/select_option.html" with widget=option %}         
+        {% endfor %}        
+    {% endfor %}        
+
+</select>
+
+
+
+
+
 
 <script>    
 
@@ -25,82 +51,117 @@
     }
 
     var cache_tag = []
+    var cache_id = []
 
     /**
         Делает запрос на сервер для подгрузки ключевых тегов
     */
-    function _search(event){        
+    async function _search(event){        
+
+        if (event.inputType === 'deleteContentBackward') return;
 
         var dl = document.getElementById('list_{{ widget.name }}');
-        dl.nextElementSibling().style = "display:none";
+        dl.nextElementSibling.style = "display:none";
 
         if (event.target.value){
 
             if (cache_tag.indexOf(event.target.value) >= 0) return;
             else{                
-                fetch('{{widget.url}}', {body: event.target.value})
-                    .then(response => {
-                        if (response.ok){
-                            cache_tag.push(event.target.value);
-                            return response.text().split(',')
-                        }
-                        else{
-                            console.warn('error _search: ' + response.status);
-                            alert('нет соединения с сервером') 
-                            dl.nextElementSibling().style = "display:inline-block";
-                            return [];
-                        }
-                    })
-                    .then(results => {                        
-                        for(let tag in results){
-                            let option = document.createElement('option');
-                            option.value = tag
-                            dl.appendChild(option)
-                        }
-                    });                
+                let response = await fetch('{{widget.url}}?query=' + encodeURIComponent(event.target.value))
+
+                var data = [];
+                if (response.ok){
+                    cache_tag.push(event.target.value);
+                    var data = await response.json();
+                }
+                else{
+                    console.warn('error _search: ' + response.status);
+                    alert('нет соединения с сервером') 
+                    dl.nextElementSibling.style = "display:inline-block";                    
+                }
+
+                for(let point of data){
+                    if (cache_id.indexOf(point.id) < 0){
+
+                        option = document.createElement('option')
+                        option.value = point.name
+                        option.setAttribute('data-id', point.id)
+                        option.setAttribute('data-hint', point.name)
+                        dl.appendChild(option)
+
+                        cache_id.push(point.id);
+                    }
+                }
+               
             }
 
         }
     }
 
+    const dutySymbols = {
+        '+':'plus',
+        '#':'sharp'
+    }
+    function replace_duty_chars(text){
+        for(let symbol in dutySymbols){
+            text = text.replace(RegExp('\\'+symbol, 'g'), dutySymbols[symbol]);
+        }
+        return text;
+    }
+
+
+    function onRemove(event){
+
+        let tag = event.target.parentElement;
+
+        let value = tag.innerText.slice(0,-1).trim();
+        var unselected_option = document.querySelector('#id_{{widget.name}} option[data-hint="'+value+'"]');
+        unselected_option.selected = false;
+        unselected_option.value = unselected_option.getAttribute('data-hint')            
+        unselected_option.innerText = '';
+        document.querySelector('#list_{{ widget.name }}').appendChild(unselected_option);   
+
+        tag.parentNode.removeChild(tag);
+        // event.target.focus();        
+    }
 
     function _append(event){ // onchoice
 
         var tag_swarm = document.getElementById('selected_{{ widget.name }}');
-        let flag = tag_swarm.querySelector('#' + '_tag_' + event.target.value);
+        let flag = tag_swarm.querySelector(
+            '#' + '{{ widget.name }}_tag_' + replace_duty_chars(event.target.value));
 
         if (!flag){
 
             var selected_option = document.querySelector('#list_{{ widget.name }} option[value="'+event.target.value + '"]');
             if (!selected_option) return;
 
+            // add t swarm
             let tag = document.createElement('div')
             tag.innerText = event.target.value;
             tag.className = '{{ widget.name }}_tag'; 
-            // tag.id = '{{ widget.name }}_tag_' + event.target.value;            
-            tag_swarm.appendChild(tag)     
+            tag.id = '{{ widget.name }}_tag_' + replace_duty_chars(event.target.value);            
+            tag_swarm.appendChild(tag)
 
             let close = document.createElement('div');
             close.className = 'close'; 
             close.innerText = '+';
-            close.onclick = function() {
-                
-                let option = document.createElement('option');
-                option.value = tag.innerText.slice(0,-1).trim();
-                console.log(tag.innerText.slice(0,-1))
-                document.querySelector('#list_{{ widget.name }}').appendChild(option);
+            close.onclick = onRemove;            
+            tag.appendChild(close);
 
-                tag.parentNode.removeChild(tag);
-                // event.target.focus();
-            }
-            
-            tag.appendChild(close)                
-            selected_option.parentNode.removeChild(selected_option);
+            // add to select
+            let select = document.getElementById('id_{{ widget.name }}')            
+            selected_option.selected = true;            
+            selected_option.value = selected_option.getAttribute('data-id')
+            selected_option.innerText = selected_option.getAttribute('data-hint');
+            select.appendChild(selected_option);
+
+            // selected_option.parentNode.removeChild(selected_option);
             event.target.value = '';
             event.target.focus();
         }
         else{
-            alert('уже выбран')
+            alert(event.target.value + ' уже есть в списке'); 
         }
 
     }    
@@ -156,5 +217,9 @@
         color: red;
 
         /*transform: rotate(405deg);*/
+    }
+    .{{ widget.name }}_messages{
+        display: none;
+        color: red;
     }
 </style>
