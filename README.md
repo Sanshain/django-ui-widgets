@@ -102,7 +102,17 @@ class ProfileUpdateForm(DivHyperModelForm):
         super().__init__('submit', 'form_class', *args, **kwargs)
 	self.action = reverse('some_next_page')
 ```
-
+or 
+```python
+class ProfileUpdateForm(DivHyperModelForm):  
+    action = '/'
+    submit = 'ok'
+    css_class = 'form_class'
+    
+    class Meta:
+        model = Profile
+        exclude = ('user',)
+```
 in template:
 ```html
 <!DOCTYPE html>
