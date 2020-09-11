@@ -80,7 +80,7 @@ deploys to following code:
 </form>
 ```
 
-- **as_div** - works like *as_ht*, but instaed of `p` tag to display each item of form fields it takes `div`
+- **as_div** - works like *as_ht*, but instaed of `p` tag to display each item of the form fields it takes `div`
 
 Optional attributes:
 
@@ -100,7 +100,7 @@ class ProfileUpdateForm(DivHyperModelForm):
     def __init__(self, *args, **kwargs):
 
         super().__init__('submit', 'form_class', *args, **kwargs)
-		self.action = reverse('some_next_page')
+	self.action = reverse('some_next_page')
 ```
 
 in template:
