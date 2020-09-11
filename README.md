@@ -61,7 +61,9 @@ Replacement for URLInput. Adds an automatic 'https://' extension at the beginnin
 **Attention!**
 for this widget to work correctly, you must explicitly specify links to media resources in the template after the form, such as: `{{ form.media }}`
 
-<h1 align=center> Forms </h1>
+
+# forms
+
 
 ## DivHyperModelForm
 
