@@ -30,7 +30,7 @@ class HyperModelForm(ModelForm):
         if self.request != None:
             csrf_t = '<input type="hidden" name="csrfmiddlewaretoken" value="' + get_token(self.request) + '">'
         if self.submit == 'def':
-            submit = 'in_' + self.__class__.__name__ + '_notdefined'
+            submit = 'in_' + self.__class__.__name__ + '_not_defined'
 
         html = '<form method="post" ' + cssclass + '>' + csrf_t + self.as_p() + '<input type="submit" value=' + submit + '></form>'
 
@@ -40,7 +40,7 @@ class HyperModelForm(ModelForm):
         return self.as_h()
 
 
-class DiveModelForm(HyperModelForm):  # (HmlModelForm)
+class DivHyperModelForm(HyperModelForm):  # (HmlModelForm)
     """
     Делает help_text_html невидимым и добавляет к нему класс help-text
     а так же скрывает реализацию самой формы
@@ -75,7 +75,7 @@ class DiveModelForm(HyperModelForm):  # (HmlModelForm)
 # example:
 
 """
-class CreatePerson(CreatePersonHTML):
+class CreatePerson(HyperModelForm):
     # required_css_class = 'required_fields'
     error_css_class = 'error_class'  # работает, но не востребовано
 

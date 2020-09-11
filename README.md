@@ -58,3 +58,58 @@ However, this is not recommended, since in this case you will need to manually i
 
 Replacement for URLInput. Adds an automatic 'https://' extension at the beginning of the line if the address is invalid
 
+**Attention!**
+for this widget to work correctly, you must explicitly specify links to media resources in the template after the form, such as: '{{ form.media }}`
+
+## DivHyperModelForm
+
+custom ModelForm with two new methods:
+
+- **as_ht()** - works like `as_p` in template, but it already contains all the necessary content of the form tag. It means, small calling `{{form.as_p}}` by render deploys to following code:
+
+```html
+<form method="post" {{cssclass}}>
+    {% csrf_token %}
+    {{form.as_p}}
+    <input type="submit" value="{{submit}}">
+</form>
+```
+
+- **as_div** - works like *as_ht*, but instaed of `p` tag to display each item of form fields it takes `div`
+
+Optional attributes:
+
+- *action* - specify `action` attribute for the `<form>` tag
+- *css_class* - specify `class` attribute for the `<form>` tag
+- *submit* - specify `value` attribute for `<submit>` tag inside tag form
+
+Usage:
+
+```python
+class ProfileUpdateForm(DivHyperModelForm):  
+
+    class Meta:
+        model = Profile
+        exclude = ('user',)
+
+    def __init__(self, *args, **kwargs):
+
+        super().__init__('submit', 'form_class', *args, **kwargs)
+		self.action = reverse('some_next_page')
+```
+
+in template:
+```html
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">	
+</head>
+<body>
+	{{form.as_div}}
+	{{form.media}}
+</body>
+```
+
+in above sample usage `{{form.media}}` is optionally like standart form
