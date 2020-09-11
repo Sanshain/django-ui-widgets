@@ -69,7 +69,8 @@ for this widget to work correctly, you must explicitly specify links to media re
 
 custom ModelForm with two new methods:
 
-- **as_ht()** - works like `as_p` in template, but it already contains all the necessary content of the form tag. It means, small calling `{{form.as_p}}` by render deploys to following code:
+- **as_ht()** - works like `as_p` in template, but it already contains all the necessary content of the form tag. It means, small calling `{{form.as_p}}` by rendering
+deploys to following code:
 
 ```html
 <form method="post" {{cssclass}}>
