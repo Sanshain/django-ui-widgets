@@ -59,7 +59,9 @@ However, this is not recommended, since in this case you will need to manually i
 Replacement for URLInput. Adds an automatic 'https://' extension at the beginning of the line if the address is invalid
 
 **Attention!**
-for this widget to work correctly, you must explicitly specify links to media resources in the template after the form, such as: '{{ form.media }}`
+for this widget to work correctly, you must explicitly specify links to media resources in the template after the form, such as: `{{ form.media }}`
+
+<h1 align=center> Forms </h1>
 
 ## DivHyperModelForm
 
