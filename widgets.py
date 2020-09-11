@@ -1,10 +1,25 @@
 from django import forms
 from django.forms import Widget, MultiWidget, SelectDateWidget
-from django.forms.widgets import ChoiceWidget, ClearableFileInput, FileInput, FILE_INPUT_CONTRADICTION
+from django.forms.widgets import ChoiceWidget, ClearableFileInput, \
+    FileInput, FILE_INPUT_CONTRADICTION, URLInput
 
 f = forms.widgets.CheckboxInput
 f = forms.widgets.SelectMultiple
 f = forms.widgets.Select
+
+
+class AutoUrlInput(URLInput):
+    class Media:
+        # css = {'all': ("iri.css",)}
+        js = ("js/auto_url_input.js",)
+
+    template_name = 'forms/widgets/auto_url.html'
+    oninput = 'urlFieldPreFill'
+
+    def __init__(self, attrs=None, oninput=None):
+        super().__init__(attrs)
+        self.attrs['oninput'] = oninput or self.oninput + '(event)'
+
 
 """
 class ToggleWidget(Widget):

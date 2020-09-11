@@ -4,7 +4,7 @@ from django.forms import BoundField, ImageField, MultipleChoiceField
 
 from django.forms import ModelMultipleChoiceField
 
-from django_extension.widgets import DynamicMultiSelect
+from django_extension.widgets import DynamicMultiSelect, ImageWidget
 
 
 class ViewImageField(BoundField):
@@ -38,6 +38,7 @@ class CustomImageField(ImageField):
     BoundField - отвечает за представление поля в шаблоне
     Нам надо переопределить label_tag, поэтому возвращаем свой класс BoundField с переопределенным методом label_tag
     """
+    widget = ImageWidget
 
     def get_bound_field(self, form, field_name):
         return ViewImageField(form, self, field_name,
