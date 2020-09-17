@@ -36,7 +36,7 @@ setup(name='django-ui-widgets',
       url='https://github.com/Sanshain/django-ui-widgets',
       license='AGPL',
 
-      packages=['django-ui-widgets'],
+      packages=find_packages(),             # ['django-ui-widgets'],
       include_package_data=True,
       install_requires=["Django>=2.0"],
 
