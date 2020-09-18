@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 import sys, os
 
 version = '1.0'
-
+packages = find_packages()
 
 setup(name='django-ui-widgets',
       version=version,
@@ -30,7 +30,7 @@ setup(name='django-ui-widgets',
       author_email='digital-mag@ya.ru',
       url='https://github.com/Sanshain/django-ui-widgets',
       license='AGPL',
-      packages=['django-ui-widgets'],
+      packages=find_packages(),  # ['django-ui-widgets'],
       include_package_data=True,
       install_requires=["Django>=2.0"],
 
