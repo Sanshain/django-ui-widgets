@@ -7,9 +7,7 @@ version = '1.0'
 setup(name='django-ui-widgets',
       version=version,
       description="Library of django ui widgets",
-      long_description="""\
-                        Library of django forms widgets and fields
-                        """,
+      long_description=open("README.MD").read(),
       classifiers=[
         'Development Status :: 5 - Production/Stable',
         'Environment :: Web Environment',
@@ -21,7 +19,6 @@ setup(name='django-ui-widgets',
         'Natural Language :: English',
         'Operating System :: OS Independent',
         'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.4',
         'Programming Language :: Python :: 3.5',
         'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7',
@@ -33,7 +30,6 @@ setup(name='django-ui-widgets',
       author_email='digital-mag@ya.ru',
       url='https://github.com/Sanshain/django-ui-widgets',
       license='AGPL',
-
       packages=['django-ui-widgets'],
       include_package_data=True,
       install_requires=["Django>=2.0"],
