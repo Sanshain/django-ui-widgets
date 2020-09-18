@@ -7,6 +7,8 @@ This is a plugin for django consisting of improved widgets and fields with a rel
 This is a replacement for `SelectMultiple`. In fact, it is an analog of django-autocomplete without using jquery. Usage:
 
 ```python
+from ui.widgets import DynamicMultiSelect
+
 class ProfileUpdateForm(ModelForm): 
 
     labels = ModelMultipleChoiceField(
