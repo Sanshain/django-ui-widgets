@@ -3,15 +3,9 @@
 
     {% for group_name, group_choices, group_index in widget.optgroups %}
         {% for option in group_choices %}            
-            <div class="labels_tag" id={{option.attrs.in_swarm_id}}>   {# "labels_tag_{{ option.label }}" #}
-                {% if link_param %}                
-                    <a href="{{link_param.url}}?{{link_param.key}}={{ option.label }}" target="_blank">
-                        {{ option.label }}
-                    </a>
-                {% else %}
-                    {{ option.label }}
-                {% endif %}
-                <div class="close" onclick="onRemove(event)">+</div>    
+            <div class="labels_tag" id="{{ option.in_swarm_id }}">
+                {{ option.label }}
+                <div class="close" onclick="onRemove(event)">+</div>
             </div>                     
         {% endfor %}        
     {% endfor %}
@@ -167,8 +161,7 @@
             event.target.focus();
         }
         else{
-            alert(event.target.value + ' уже есть в списке выбранных элементов'); 
-            event.target.value = "";
+            alert(event.target.value + ' уже есть в списке'); 
         }
 
     }    

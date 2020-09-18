@@ -66,9 +66,9 @@ class ImageWidget(FileInput):
         context = super().get_context(name, value, attrs)
         context['widget'].update({
             'is_initial': self.is_initial(value),
-            'jar_class': 'jar_class',
-            'img_class': 'img_class',
-            'clr_class': 'clr_class'
+            'jar_class': '',
+            'img_class': '',
+            'clr_class': ''
         })
         return context
 
@@ -89,7 +89,6 @@ class ImageWidget(FileInput):
 
 class DynamicMultiSelect(ChoiceWidget):  # ChoiceWidget
 
-    link_param = None
     duty_symbols = {
         '+': 'plus',
         '#': 'sharp'
@@ -110,14 +109,12 @@ class DynamicMultiSelect(ChoiceWidget):  # ChoiceWidget
     # __deepcopy__ = ChoiceWidget.__deepcopy__
     # id_for_label = ChoiceWidget.id_for_label
 
-    def __init__(self, url='', placeholder=None, attrs=None, link_param=None, **kwargs):  # choices=(), # # ChoiceWidget
-        self.link_param = link_param
+    def __init__(self, url='', placeholder=None, attrs=None, **kwargs):  # choices=(), # # ChoiceWidget
         if placeholder:
             attrs = attrs or {}
             attrs['placeholder'] = placeholder
         super().__init__(attrs, **kwargs)
         self.url = url
-        
         # self.choices = choices  # ChoiceWidget
 
     def get_context(self, name, value, attrs):
@@ -134,7 +131,6 @@ class DynamicMultiSelect(ChoiceWidget):  # ChoiceWidget
 
         context['widget']['url'] = self.url
         context['default_attrs'] = default_attrs
-        context['link_param'] = self.link_param
         return context
 
     def value_from_datadict(self, data, files, name):
