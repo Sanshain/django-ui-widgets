@@ -138,7 +138,7 @@ There are two steps:
     ```
     pip install git+http://github.com/Sanshain/django-ui-widgets
     ```
-- Second step: add 'django-ui-widgets' to INSTALLED_APPS inside `settings.py` of your project
+- Second step: add 'django-ui-widgets' to `INSTALLED_APPS` inside `settings.py` of your project
 
 Finish
 
