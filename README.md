@@ -133,7 +133,11 @@ in above sample usage `{{form.media}}` is optionally like standart form
 # installation
 
 There are two steps:
-- First step: install from `pip install git+http://github.com/Sanshain/django-ui-widgets`
+- First step: install through 
+
+    ```
+    pip install git+http://github.com/Sanshain/django-ui-widgets
+    ```
 - Second step: add 'django-ui-widgets' to INSTALLED_APPS inside `settings.py` of your project
 
 Finish
