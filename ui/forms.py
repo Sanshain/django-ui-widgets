@@ -15,7 +15,7 @@ from django.middleware.csrf import get_token
 class HyperModelForm(ModelForm):
     action = ''
 
-    def __init__(self, submit='def', cssclass='', *args, **kwargs):
+    def __init__(self, *args, submit='def', cssclass='', **kwargs):
         super().__init__(*args, **kwargs)
         self.request = kwargs.pop('request', None)
         self.submit = submit
