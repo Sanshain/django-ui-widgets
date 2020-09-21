@@ -115,6 +115,14 @@ class ProfileUpdateForm(DivHyperModelForm):
         model = Profile
         exclude = ('user',)
 ```
+
+Create instance and pass to template:
+
+```python
+context = {'form': ProfileUpdateForm(submit='ok', request=request)}
+render('template_name.html', context, request)
+```
+
 in template:
 ```html
 <!DOCTYPE html>
