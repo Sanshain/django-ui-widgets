@@ -70,6 +70,9 @@ class DivHyperModelForm(HyperModelForm):  # (HmlModelForm)
                f'</form>'
 
         return mark_safe(html)
+    
+    def __str__(self):
+        return self.as_div()
 
 
 # example:
