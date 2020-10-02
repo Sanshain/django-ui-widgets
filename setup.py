@@ -7,7 +7,7 @@ packages = find_packages()
 setup(name='django-ui-widgets',
       version=version,
       description="Library of django ui widgets",
-      long_description=open("README.MD").read(),
+      long_description=open("README.md").read(),
       classifiers=[
         'Development Status :: 5 - Production/Stable',
         'Environment :: Web Environment',
