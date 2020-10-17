@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 import sys, os
 
-version = '1.02b'
+version = '1.03b'
 packages = find_packages()
 desc = open("README.md").read()
 
