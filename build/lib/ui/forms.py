@@ -16,8 +16,8 @@ class HyperModelForm(ModelForm):
     action = ''
 
     def __init__(self, submit='def', cssclass='', *args, **kwargs):
-        self.request = kwargs.pop('request', None)
         super().__init__(*args, **kwargs)
+        self.request = kwargs.pop('request', None)
         self.submit = submit
         self.css_class = cssclass
 

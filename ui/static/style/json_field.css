@@ -1,0 +1,105 @@
+.del_key, .append_value{
+    display:inline-block;
+    background-image: url("/static/admin/img/icon-deletelink.svg");
+    background-repeat: no-repeat;
+    width: 1em;
+    height: 1em;
+    cursor: pointer;    
+    border-radius: 1em;
+    transition: 1s;
+}
+.del_key:hover{
+    /*background-color: bisque;*/
+    box-shadow: 0 0 15px gray;
+}
+
+.append_btn{
+    display: block;
+    background-image: url("/static/admin/img/icon-addlink.svg");
+    background-repeat: no-repeat;
+    cursor: pointer;
+    width: 2em;
+    height: 2em;
+    margin: 1em;
+}
+
+.append_value{
+    background-image: url("/static/admin/img/icon-addlink.svg");
+}
+
+label, input{
+    transition: 1s;
+}
+
+.modal{
+    position: fixed;
+    top: calc(50vh - 10em);
+    bottom: calc(50vh - 10em);
+    left: calc(50vw - 15em);
+    width: 30em;
+    background-color: lightgray;
+    border-radius: 1em;
+    display: none;
+
+    padding-top: 2em;
+    transition: 0.5s;
+    opacity: 0;
+}
+
+
+.modal>input{
+    border-radius: 1em;
+    padding: 10px;
+    display: block;
+    border: 1px solid gray;
+    outline: none;
+    width: 80%;
+    margin: 2em auto;
+}
+
+.keyvalue_accept{
+    background-color: lightcyan;
+    margin: 2em auto;
+    margin-top: 3em;
+    text-align: center;
+    width: 80%;
+    padding: 0.7em 1em;
+    border-radius: 1em;
+    box-shadow: 0 0 15px black;
+    cursor: pointer;
+    transition: 0.5s;
+}
+
+.keyvalue_accept:hover{
+    background-color: orange;
+}
+
+.new_key_cancel{
+    position: absolute;
+    top:0.5em;
+    right: 0.5em;
+    width: 2em;
+    height: 2em;
+    background-image: url(/static/admin/img/icon-deletelink.svg);
+    background-size: cover;
+    cursor: pointer;
+}
+
+.jsn_label{
+    display: inline-block;
+    float:none;
+}
+.jsn_value{
+    width:50vw;
+    /*margin-left:-3px;*/
+}
+
+.nested{
+    margin-left: 2.5em;
+}
+
+
+.nested input, .nested .del_key{
+    left: -2.5em;
+    position: relative;
+}/**/

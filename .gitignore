@@ -3,5 +3,8 @@ __pycache__/
 __venv/
 __venv3/ 
 *.log
+*.map
 
 .idea/
+django_ui_widgets.egg-info/
+dist/

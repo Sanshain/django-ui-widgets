@@ -1,15 +1,17 @@
 from setuptools import setup, find_packages
 import sys, os
 
-version = '1.0'
+version = '1.02b'
 packages = find_packages()
+desc = open("README.md").read()
 
 setup(name='django-ui-widgets',
       version=version,
       description="Library of django ui widgets",
-      long_description=open("README.MD").read(),
+      long_description=desc,
+      long_description_content_type='text/markdown',
       classifiers=[
-        'Development Status :: 5 - Production/Stable',
+        'Development Status :: 4 - Beta',
         'Environment :: Web Environment',
         'Framework :: Django',
         'Framework :: Django :: 3.0',

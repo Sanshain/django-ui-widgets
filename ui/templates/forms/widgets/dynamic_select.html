@@ -1,0 +1,189 @@
+
+
+<style>
+    .{{ widget.name }}_messages{
+        display: none;                
+        color: red;
+    }
+    .dynamic_select{
+        position: relative;
+    }
+</style>
+
+
+<div class="dynamic_select">
+    <input
+        autocomplete="off"
+        id='dynamic_{{ widget.name }}_select'
+        type="text"     
+        list="list_{{ widget.name }}" 
+        oninput="debounce(dynamic_search, 500)(event)" 
+        onchange="select_set(event)"
+        onmousedown="setTimeout(() => select(this), 25)"
+        {% include "django/forms/widgets/attrs.html" %} />
+    <datalist id="list_{{ widget.name }}"></datalist>
+    <span class="{{ widget.name }}_messages">Нет соединения с сервером</span>
+
+    <select name="{{ widget.name }}" style="opacity: 0; position: absolute; top: 0;"     
+        {% include "forms/widgets/default_attrs.html" %}>
+
+        {% for group_name, group_choices, group_index in widget.optgroups %}
+            {% for option in group_choices %}
+                {% include "django/forms/widgets/select_option.html" with widget=option %}         
+            {% endfor %}        
+        {% endfor %}        
+
+    </select>
+</div>
+
+
+<script>    
+
+    (function dynamicSelectInitialize(){
+
+        let select = document.getElementsByName('{{ widget.name }}')[0];
+        // for (widget of widgets)
+        let options = select.querySelectorAll('option[selected]');
+        let selected = options[options.length - 1];
+        let value = selected.getAttribute('data-hint');
+        if (value){
+            document.getElementById('dynamic_{{ widget.name }}_select').value = value;
+        }
+    })();
+
+    // todo: select_set => {{ widget.name }}_set
+
+    function debounce(f, ms) {
+
+        let isCooldown = false;
+        return function() {
+            if (isCooldown) return;
+
+            f.apply(this, arguments);
+            isCooldown = true;
+
+            setTimeout(() => isCooldown = false, ms);
+        };
+
+    }
+
+    /// кэширует ключи, которые уже были запрошены с сервера
+    var cache_tag = []
+    var cache_id = []
+
+    /**
+        oninput:
+        Делает запрос на сервер для подгрузки ключевых тегов
+
+    */
+    async function dynamic_search(event){        
+
+        if (event.inputType === 'deleteContentBackward') {
+            
+            if (event.target.value.length == 0){
+
+                let select = document.getElementById("id_{{ widget.name }}");
+                options = select.querySelectorAll('option')
+                for (const option of options) {
+                    
+                    option.selected = false;
+                }
+                select.querySelector('option').selected = true;
+
+            }
+            return;
+        }
+
+        var dl = document.getElementById('list_{{ widget.name }}');
+        dl.nextElementSibling.style = "display:none";                           // скрываем сообщение об отсутствии соединения
+
+        if (event.target.value){
+
+            if (cache_tag.indexOf(event.target.value) >= 0) return;
+            else{
+                let base_url = '{{widget.url}}';
+                let cancat_char = base_url.indexOf('?') < 0 ? '?' : '&';
+                let response = await fetch('{{widget.url}}'+ cancat_char +'query=' + encodeURIComponent(event.target.value))
+
+                var data = [];
+                if (response.ok){
+                    cache_tag.push(event.target.value);
+                    var data = await response.json();
+                }
+                else{
+                    // console.warn('error _search: ' + response.status);
+                    // alert('нет соединения с сервером') 
+                    dl.nextElementSibling.style = "display:inline-block";                    
+                }
+
+                for(let point of data){
+                    if (cache_id.indexOf(point.id) < 0){
+
+                        option = document.createElement('option')
+                        option.value = point.name
+                        option.setAttribute('data-id', point.id)
+                        option.setAttribute('data-hint', point.name)
+                        dl.appendChild(option)
+
+                        cache_id.push(point.id);
+                    }
+                }
+               
+            }
+
+        }
+    }
+
+
+
+
+
+
+
+    // all obsolete:
+
+    const dutySymbols = {
+        '+':'plus',
+        '#':'sharp'
+    }
+    function replace_duty_chars(text){
+        for(let symbol in dutySymbols){
+            text = text.replace(RegExp('\\'+symbol, 'g'), dutySymbols[symbol]);
+        }
+        return text;
+    }
+
+
+    function select_set(event){ // onchoice
+
+        // add to select
+        let select = document.querySelector('select[name="{{widget.name}}"]');  // document.getElementById('id_{{ widget.name }}'
+        let input = document.getElementById('dynamic_{{ widget.name }}_select');
+
+        let option = select.querySelector('option[data-hint="'+input.value+'"]');
+
+        // document.getElementById("list_{{ widget.name }}")
+
+        // add to select
+        if (!option){
+
+            option = document.getElementById("list_{{ widget.name }}").querySelector('option[data-hint="'+input.value+'"]');
+            if (option) input.title = '';
+            else {
+                input.title = 'нет такой подсветки';      
+                return;          
+            }
+            
+            selected_option = option.cloneNode(true);
+            selected_option.selected = true;            
+            selected_option.value = selected_option.getAttribute('data-id')
+            selected_option.innerText = selected_option.getAttribute('data-hint');      // optional
+            select.appendChild(selected_option);    
+        }
+
+        // event.target.value = '';
+        // event.target.focus();        
+
+    }    
+</script>
+

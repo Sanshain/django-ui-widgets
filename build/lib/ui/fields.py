@@ -1,21 +1,10 @@
 from django.conf import settings
 from django.core.exceptions import ValidationError
-from django.forms import BoundField, ImageField, MultipleChoiceField, ModelChoiceField, Form, ModelForm
+from django.forms import BoundField, ImageField, MultipleChoiceField
 
 from django.forms import ModelMultipleChoiceField
 
-from django_extension.widgets import DynamicMultiSelect, ImageWidget, DynamicSelect
-
-
-class DynamicBoundField(BoundField):
-
-    def __init__(self, form: ModelForm, field, name):
-        if not isinstance(form, ModelForm):
-            raise Exception('Use `DynamicSelect` field just for ModelForm instances')
-        if not form.instance:
-            field.queryset = field.queryset.none()
-
-        super().__init__(form, field, name)
+from django_extension.widgets import DynamicMultiSelect, ImageWidget
 
 
 class ViewImageField(BoundField):
@@ -51,6 +40,11 @@ class CustomImageField(ImageField):
     """
     widget = ImageWidget
 
+    def get_bound_field(self, form, field_name):
+        return ViewImageField(form, self, field_name,
+                              css_class=self.label_css_class,
+                              back_image=self.back_image)
+
     def __init__(self, *, label_css_class: str = 'upload', back_image=None, onchange='upload', **kwargs):
         """
         :param label_css_class: класс для лэйбла
@@ -67,44 +61,7 @@ class CustomImageField(ImageField):
         self.widget.attrs['style'] = 'width:0;height:0;padding:0;'
 
 
-class DynamicModelField(ModelChoiceField):
-    """
-    alpha
-    """
-    widget = DynamicSelect
-    # get_bound_field = lambda self, form, field_name: DynamicBoundField(form, self, field_name)
-
-    def __init__(self, url, queryset, placeholder='', class_name=None, **kwargs):
-
-        kwargs['required'] = kwargs.get('required', False)
-        super().__init__(queryset, widget=self.widget(url), empty_label='', **kwargs)
-        self.widget.attrs['placeholder'] = placeholder
-        if class_name:
-            self.widget.attrs['class'] = class_name
-
-    def get_bound_field(self, form, field_name):
-        return DynamicBoundField(form, self, field_name)
-
-
-
-
-    # def to_python(self, value):
-    #     if value in self.empty_values:
-    #         return None
-    #     try:
-    #         key = self.to_field_name or 'pk'
-    #         if isinstance(value, self.queryset.model):
-    #             value = getattr(value, key)
-    #         value = self.queryset.get(**{key: value[0]})
-    #     except (ValueError, TypeError, self.queryset.model.DoesNotExist):
-    #         raise ValidationError(self.error_messages['invalid_choice'], code='invalid_choice')
-    #     return value
-
-
 class DynamicChoiceField(ModelMultipleChoiceField):
-    """
-    alpha
-    """
 
     widget = DynamicMultiSelect
     """
