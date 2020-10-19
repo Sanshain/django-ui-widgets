@@ -72,21 +72,18 @@ class DynamicModelField(ModelChoiceField):
     alpha
     """
     widget = DynamicSelect
+
     # get_bound_field = lambda self, form, field_name: DynamicBoundField(form, self, field_name)
 
-    def __init__(self, url, queryset, placeholder='', class_name=None, **kwargs):
-
+    def __init__(self, url, queryset, placeholder='', class_name=None, attrs=None, **kwargs):
         kwargs['required'] = kwargs.get('required', False)
-        super().__init__(queryset, widget=self.widget(url), empty_label='', **kwargs)
+        super().__init__(queryset, widget=self.widget(url, attrs=attrs), empty_label='', **kwargs)
         self.widget.attrs['placeholder'] = placeholder
         if class_name:
             self.widget.attrs['class'] = class_name
 
     def get_bound_field(self, form, field_name):
         return DynamicBoundField(form, self, field_name)
-
-
-
 
     # def to_python(self, value):
     #     if value in self.empty_values:
@@ -110,6 +107,7 @@ class DynamicChoiceField(ModelMultipleChoiceField):
     """
     check_queryset - queryset для проверки внутри _check_values
     """
+
     def __init__(self, queryset, url='/', check_queryset=None, class_name=None, **kwargs):
         super().__init__(queryset, widget=self.widget(url), **kwargs)
         self.check_queryset = check_queryset
@@ -154,4 +152,3 @@ class DynamicChoiceField(ModelMultipleChoiceField):
                     params={'value': val},
                 )
         return qs
-

@@ -17,14 +17,15 @@
         id='dynamic_{{ widget.name }}_select'
         type="text"     
         list="list_{{ widget.name }}" 
-        oninput="debounce(dynamic_search, 500)(event)" 
-        onchange="select_set(event)"
+        oninput="debounce({{ widget.name }}_dynamic_search, 500)(event)" 
+        onchange="{{ widget.name }}_set(event)"
         onmousedown="setTimeout(() => select(this), 25)"
+        onkeydown="nextFocus(event)"
         {% include "django/forms/widgets/attrs.html" %} />
     <datalist id="list_{{ widget.name }}"></datalist>
     <span class="{{ widget.name }}_messages">Нет соединения с сервером</span>
 
-    <select name="{{ widget.name }}" style="opacity: 0; position: absolute; top: 0;"     
+    <select name="{{ widget.name }}" style="opacity: 0; position: absolute; top: 0;"         
         {% include "forms/widgets/default_attrs.html" %}>
 
         {% for group_name, group_choices, group_index in widget.optgroups %}
@@ -37,21 +38,22 @@
 </div>
 
 
+
 <script>    
 
-    (function dynamicSelectInitialize(){
+    function nextFocus(event){
+        
+        if (event.keyCode == 9){    // tab
 
-        let select = document.getElementsByName('{{ widget.name }}')[0];
-        // for (widget of widgets)
-        let options = select.querySelectorAll('option[selected]');
-        let selected = options[options.length - 1];
-        let value = selected.getAttribute('data-hint');
-        if (value){
-            document.getElementById('dynamic_{{ widget.name }}_select').value = value;
+            event.preventDefault();
+            var elems = [].slice.call(document.querySelectorAll('input, textarea'));
+            let target_index = elems.indexOf(event.target);
+            if (++target_index < elems.length){
+
+                elems[target_index].focus();
+            }
         }
-    })();
-
-    // todo: select_set => {{ widget.name }}_set
+    }
 
     function debounce(f, ms) {
 
@@ -67,6 +69,20 @@
 
     }
 
+    (function dynamicSelectInitialize(){
+
+        let select = document.getElementsByName('{{ widget.name }}')[0];        
+        // for (widget of widgets)
+        let options = select.querySelectorAll('option[selected]');
+        let selected = options[options.length - 1];
+        let value = selected.getAttribute('data-hint');
+        if (value){
+            document.getElementById('dynamic_{{ widget.name }}_select').value = value;
+        }
+    })();
+
+    // todo: select_set => {{ widget.name }}_set
+
     /// кэширует ключи, которые уже были запрошены с сервера
     var cache_tag = []
     var cache_id = []
@@ -76,7 +92,7 @@
         Делает запрос на сервер для подгрузки ключевых тегов
 
     */
-    async function dynamic_search(event){        
+    async function {{ widget.name }}_dynamic_search(event){        
 
         if (event.inputType === 'deleteContentBackward') {
             
@@ -136,25 +152,10 @@
 
 
 
-
-
-
-
     // all obsolete:
 
-    const dutySymbols = {
-        '+':'plus',
-        '#':'sharp'
-    }
-    function replace_duty_chars(text){
-        for(let symbol in dutySymbols){
-            text = text.replace(RegExp('\\'+symbol, 'g'), dutySymbols[symbol]);
-        }
-        return text;
-    }
 
-
-    function select_set(event){ // onchoice
+    function {{ widget.name }}_set(event){ // onchoice
 
         // add to select
         let select = document.querySelector('select[name="{{widget.name}}"]');  // document.getElementById('id_{{ widget.name }}'
