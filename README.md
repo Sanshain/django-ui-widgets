@@ -94,6 +94,25 @@ Replacement for URLInput. Adds an automatic 'https://' extension at the beginnin
 **Attention!**
 for this widget to work correctly, you must explicitly specify links to media resources in the template after the form, such as: `{{ form.media }}`
 
+## JSONViewWidget
+
+**JSONViewWidget** - widget for displaying the content of `model.JSONField` (a field officially added in django 3.1). Designed specifically for use in the admin interface. Usage example:
+
+```python
+class SkillAdmin(admin.ModelAdmin):
+    formfield_overrides = {
+            models.JSONField: {            
+                'widget': JSONViewWidget(                
+            ) 
+        },
+    }
+```
+
+`JSONViewWidget` inspired by [SplitJSONWidget](https://github.com/abbasovalex/django-SplitJSONWidget-form). But it has the following features that are missing in `SplitJSONWidget`, currently:
+
+- adding and removing notes of the tree first level
+- editing for array entries of the tree first level
+- view, editing and deleting for the notes of embedded levels
 
 # forms
 
