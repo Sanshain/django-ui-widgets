@@ -49,7 +49,7 @@ Like `DynamicMultiSelect` *DynamicSelect* is replacement standart `Select` djang
 
 ## DynamicModelField
 
-Field using DynamicSelect widget. Using:
+Field using `DynamicSelect` widget. Usage:
 
 ```python
 form.fields['type'] = DynamicModelField(
