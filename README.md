@@ -61,7 +61,7 @@ form.fields['type'] = DynamicModelField(
 )
 ```
 
-Here you also can specify `class_name` and optional `attrs` for DynamicSelect widget:
+In constructor you also can specify `class_name` and optional `attrs` for DynamicSelect widget:
 
 ```python
 form.fields['type'] = DynamicModelField(
@@ -72,6 +72,7 @@ form.fields['type'] = DynamicModelField(
     attrs={'style': 'margin-bottom:0'}
 )
 ```
+you can use several of these fields on the same page and in the same form
 
 ## CustomImageField
 
