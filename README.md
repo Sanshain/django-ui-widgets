@@ -43,6 +43,37 @@ You can also use `.annotate(value=F('name')` instead of `extra` for receiving pr
 
 Also pay attention to the choice assignment when transmitting data. This is necessary for correct form validation when checking primary keys
 
+## DynamicSelect
+
+Like `DynamicMultiSelect` *DynamicSelect* is replacement standart `Select` django widget for `ForeignKey` model fields with asynchronius autofillng from specified url. Works without jquery. Using like `DynamicMultiSelect` or through `DynamicModelField` (recomended):
+
+## DynamicModelField
+
+**DynamicModelField** is field using `DynamicSelect` widget. 
+
+The simplest usage example:
+
+```python
+form.fields['type'] = DynamicModelField(
+    reverse('tag_filter'),
+    SkillLabel.objects.filter(id=form.instance.type_id),
+    'Field Placeholder',
+)
+```
+
+In constructor you also can specify `class_name` and optional `attrs` for DynamicSelect widget:
+
+```python
+form.fields['type'] = DynamicModelField(
+    reverse('tag_filter'),
+    SkillLabel.objects.filter(id=form.instance.type_id),
+    placeholder='Placeholder',
+    class_name='my_class',
+    attrs={'style': 'margin-bottom:0'}
+)
+```
+you can use several of these fields on the same page and in the same form
+
 ## CustomImageField
 
 A field that hides input with the file type and allows you to set the css class for the label pointing to it. 
