@@ -41,7 +41,7 @@ function del_key(event, key){
 }
 
 
-function append_value(event){
+function append_value(event, append){
 
     let modal = modalCreate();
     modal.style.paddingTop = '4em';
@@ -54,9 +54,14 @@ function append_value(event){
     accept.innerText = 'Добавить'    
     accept.className = 'keyvalue_accept';
     close.className = 'new_key_cancel';
+    if (append === false) {
+        valMod.value = event.target.value;    
+        valMod.select();
+    }
     valMod.onkeydown = function(e){
         
-        if(e.key == 'Enter') accept.click()
+        if(e.key == 'Enter') accept.click();
+        else if (e.key == "Escape") close.onclick();
     }
 
     close.onclick = function(){
@@ -65,26 +70,41 @@ function append_value(event){
         setTimeout(()=>{
 
             modal.parentElement.removeChild(modal);
-        }, 1000)        
+        }, 500); // 1000
     }
 
     accept.onclick = function(){
      
         if (valMod.value.length == 0) return;
-        select = event.target.parentElement.querySelector('select');
-        let options = select.querySelectorAll('option');
         
-        let newOption = document.createElement('option')
-        newOption.value = valMod.value;
-        newOption.innerText = valMod.value;
-        select.appendChild(newOption);
+        if (append === false){
+            event.target.innerText = event.target.value = valMod.value;             
 
-        let input = document.createElement('input');
-        input.name = select.id + '__' + options.length;            
-        input.value = valMod.value;
-        input.style.display = 'none';
+            // just for server validation:
+            let select = event.target.parentElement;
+            let index = [].slice.apply(select.children).indexOf(event.target);
+            let inputName = select.id + '__' + index;
+            let input = select.parentElement.querySelector('input[name="' + inputName + '"');
+            input.value = valMod.value;
+        }
+        else if (append === undefined) {
 
-        select.parentElement.appendChild(input);
+            select = event.target.parentElement.querySelector('select');
+            let options = select.querySelectorAll('option');            
+            let newOption = document.createElement('option')
+            newOption.value = valMod.value;
+            newOption.innerText = valMod.value;
+            select.appendChild(newOption);
+
+            // just for server validation:
+            let input = document.createElement('input');
+            input.name = select.id + '__' + options.length;            
+            input.value = valMod.value;
+            input.style.display = 'none';
+            // append for server validation:
+            select.parentElement.appendChild(input);            
+        }
+
         close.onclick();
     }
 
@@ -94,7 +114,7 @@ function append_value(event){
     }
 
     setTimeout(()=>{
-        modal.style.opacity = '1';
+        modal.style.opacity = '1'; // 1
         valMod.focus();
     })
 

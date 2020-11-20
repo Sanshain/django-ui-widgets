@@ -140,7 +140,7 @@ class JSONViewWidget(forms.Widget):
 
         options = ''
         for option in value:
-            options += f'<option selected value="{option}">{option}</option>'
+            options += f'<option selected ondblclick="append_value(event, false)" value="{option}">{option}</option>'
 
         input_def_style = self.input_def_style[:-1] + 'margin-top: 3px;"'
         return f"""
