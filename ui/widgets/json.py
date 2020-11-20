@@ -13,7 +13,7 @@ import json  # # import simplejson as json
 import copy
 
 
-class SplitJSONWidget(forms.Widget):
+class JSONViewWidget(forms.Widget):
     # class Media:
     #     # css = {'all': ("iri.css",)}
     #     js = ("js/auto_url_input.js",)
@@ -209,6 +209,7 @@ class SplitJSONWidget(forms.Widget):
         :return:
         """
         form_group_class = ''
+        input_list = [input_list] if type(input_list) is str else input_list
         if input_list:
             result = ''
             for item in input_list:
@@ -244,6 +245,9 @@ class SplitJSONWidget(forms.Widget):
         def _to_parse_key(k, v):
             if k.find(self.separator) != -1:
                 apx, _, nk = k.rpartition(self.separator)
+                if apx.startswith('__'):
+                    apx = apx[2:]
+
                 try:
                     # parse list
                     int(nk)

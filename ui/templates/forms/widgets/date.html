@@ -1,0 +1,55 @@
+<style>
+    .w__date{
+        position: relative; 
+    }   
+    .w__date input{
+        color: lightgray;
+    }
+    .w__placeholder_{{ widget.name }}{
+       position: absolute;
+       top:0;
+       background-color: white;   
+       left: 0;
+       color: gray;       
+    }
+</style>
+<div class="w__date">
+    {% include "django/forms/widgets/input.html" %}
+    <div class="w__placeholder_{{ widget.name }}">
+        {{ placeholder }}
+    </div>
+</div>
+
+<script>
+    
+    window.addEventListener('load', function(){
+        
+        let date_input = document.getElementById('id_{{ widget.name }}')
+        let placeHolder = document.querySelector('.w__placeholder_{{ widget.name }}')
+        
+        placeHolder.style.left = date_input.offsetLeft+5+'px';
+        placeHolder.style.top = date_input.offsetTop-10+'px';
+
+        window.addEventListener('resize', ()=>{            
+            placeHolder.style.left = date_input.offsetLeft+5+'px';
+            placeHolder.style.top = date_input.offsetTop-10+'px';
+        })
+
+        date_input.oninput = function(event){
+
+            placeHolder.style.display = 'none';
+        }
+        date_input.onchange = () => {
+
+            placeHolder.style.display = date_input.value.length ? 'none' : 'block';            
+            if (date_input.value.length){
+                date_input.style.color = 'black'
+            }
+            else date_input.style.color = 'lightgray';
+        }
+
+        placeHolder.onclick = () => date_input.focus();
+    })
+</script>
+
+

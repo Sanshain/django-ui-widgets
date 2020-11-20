@@ -49,15 +49,15 @@ function append_value(event){
     let close = document.createElement('div');    
     let valMod = document.createElement('input');
     let accept = document.createElement('div'); 
-    
-    valMod.placeholder = 'Значение'
-    accept.innerText = 'Добавить'    
-    accept.className = 'keyvalue_accept';
-
-    valMod.placeholder = 'Значение'
+        
+    valMod.placeholder = 'Значение'    
     accept.innerText = 'Добавить'    
     accept.className = 'keyvalue_accept';
     close.className = 'new_key_cancel';
+    valMod.onkeydown = function(e){
+        
+        if(e.key == 'Enter') accept.click()
+    }
 
     close.onclick = function(){
         
@@ -126,6 +126,8 @@ function add_json_field(event){
 
     keyMod.placeholder = 'Ключ';         
     valMod.placeholder = 'Значение'
+    valMod.onkeydown = (e) => { if(e.key == 'Enter') accept.click() }
+    
     accept.innerText = 'Добавить'    
     accept.className = 'keyvalue_accept';
     accept.onclick = function(){
