@@ -330,7 +330,7 @@ class JSONViewWidget(forms.Widget):
             value = json.loads(value)
         except (TypeError, KeyError):
             pass
-        inputs = self._to_build(name, value or {})
+        inputs = self._to_build(name, [] if value == [] else (value or {}))
         result = self._prepare_as_div(inputs, 0)
 
         append_btn = f'<div class="append_btn" onclick="add_json_field(event)"></div>'
