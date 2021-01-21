@@ -17,11 +17,12 @@
 {% if widget.is_initial and widget.value.url %}
     <div id="container_for_id_image" class="img_preloader_jar">        
             <img src="{{ widget.value.url }}" class="img_preloader_field"/>
-            <div class="img_preloader_closer" onclick="remove_photo(event)" title="удалить"></div>
+            <div class="img_preloader_closer" onclick="remove_photo(event)" title="удалить">+</div>
     </div>
 {% endif %}
-<input type="{{ widget.type }}" name="{{ widget.name }}"{% include "django/forms/widgets/attrs.html" %}>
-
+<input type="{{ widget.type }}" name="{{ widget.name }}" {% include "django/forms/widgets/attrs.html" %}>
+<input type="checkbox" name="{{ widget.checkbox_name }}" id="{{ widget.checkbox_id }}" style="display: none;">
+<!-- name=image-clear id=image-clear_id -->
 
 <script>
     HTMLElement.prototype.setStyle = function(styles){
@@ -77,6 +78,7 @@
         // event.preventDefault();
         target = document.querySelector('#id_{{ widget.name }}');
         target.value = null;
+
         upload_photo({target:target}); 
     }
 
@@ -88,6 +90,7 @@
         );
                         
 
+        document.getElementById('{{ widget.name }}-clear_id').checked = !event.target.files[0];
         if (!event.target.files[0]) {    
             
             container.style.height = '0px';
@@ -121,17 +124,23 @@
 
 
 <style>
+    #container_for_id_image img{ 
+        box-shadow: 0px 0px 5px gray; 
+        /* transition: 2s;  */
+    }
+    /* #container_for_id_image{transition: 3s;} */
     .img_preloader_jar {
         padding: 15px;
         position: relative;
         width: max-content;
         margin: auto;
+        /* transition: 2s; */
     }
 
     .img_preloader_field {
         height: 200px;
         border-radius: 15px;
-        transition: 0.5s;
+        transition: 0.5s;           
     }
 
     .img_preloader_closer {
@@ -146,14 +155,16 @@
         cursor: pointer;
         display: block;
         transition: 1s;
+        color: transparent;
 
         line-height: 1em;
-        color: lightblue;
-        transform: rotate(45deg);
+        /* color: lightblue; */
+        /* transform: rotate(45deg); */
     }
 
     .img_preloader_closer:hover {
-        transform: rotate(45deg) scale(1.1);
+        transform: rotate(135deg) scale(1.1);
+        color: burlywood;
         opacity: 1;
         background-color: orangered;
     }

@@ -58,7 +58,7 @@ class CustomImageField(ImageField):
         :param onchange: имя соьытия обработки
         """
         hint = kwargs.pop('hint', None)
-        super(CustomImageField, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         if onchange:
             self.widget.attrs['onchange'] = f'{onchange}(event)'
 

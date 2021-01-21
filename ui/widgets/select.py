@@ -1,7 +1,7 @@
 from django import forms
 from django.forms import Widget, MultiWidget, SelectDateWidget
 from django.forms.widgets import ChoiceWidget, ClearableFileInput, \
-    FileInput, FILE_INPUT_CONTRADICTION, URLInput, Input
+    FileInput, FILE_INPUT_CONTRADICTION, URLInput, Input, CheckboxInput
 
 f = forms.widgets.CheckboxInput
 f = forms.widgets.SelectMultiple
@@ -46,7 +46,7 @@ class ToggleWidget(Widget):
 """
 
 
-class ImageWidget(FileInput):
+class ImageWidget(ClearableFileInput):  # FileInput
     template_name = 'forms/widgets/image_picker.html'
     default_image = None
     hint = None
@@ -66,8 +66,13 @@ class ImageWidget(FileInput):
 
     def get_context(self, name, value, attrs):
         context = super().get_context(name, value, attrs)
+
+        checkbox_name = self.clear_checkbox_name(name)
+
         context['hint'] = self.hint
         context['widget'].update({
+            'checkbox_name': checkbox_name,
+            'checkbox_id': self.clear_checkbox_id(checkbox_name),
             'is_initial': self.is_initial(value),
             'jar_class': '',
             'img_class': '',
