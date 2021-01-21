@@ -14,11 +14,12 @@ from django.middleware.csrf import get_token
 
 class HyperModelForm(ModelForm):
     action = ''
+    submit = None
 
     def __init__(self, submit='def', cssclass='', *args, **kwargs):
         self.request = kwargs.pop('request', None)
         super().__init__(*args, **kwargs)
-        self.submit = submit
+        self.submit = self.submit or submit
         self.css_class = cssclass
 
     def as_ht(self):
@@ -62,7 +63,7 @@ class DivHyperModelForm(HyperModelForm):  # (HmlModelForm)
             errors_on_separate_row=False)
         csrf_t = '<p style="color:red">Set csrf in your view</p>' if self.request == None \
             else '<input type="hidden" name="csrfmiddlewaretoken" value="' + get_token(self.request) + '">'
-        submit = 'in_' + self.__class__.__name__ + '_notdefined' if self.submit == 'def' \
+        submit = '`submit` in ' + self.__class__.__name__ + ' is not defined' if self.submit == 'def' \
             else self.submit
 
         html = f'<form method="post" {cssclass} {action} {enctype}> ' \

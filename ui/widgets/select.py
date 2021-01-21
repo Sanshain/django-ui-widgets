@@ -48,6 +48,8 @@ class ToggleWidget(Widget):
 
 class ImageWidget(FileInput):
     template_name = 'forms/widgets/image_picker.html'
+    default_image = None
+    hint = None
 
     def format_value(self, value):
         """
@@ -64,11 +66,13 @@ class ImageWidget(FileInput):
 
     def get_context(self, name, value, attrs):
         context = super().get_context(name, value, attrs)
+        context['hint'] = self.hint
         context['widget'].update({
             'is_initial': self.is_initial(value),
             'jar_class': '',
             'img_class': '',
-            'clr_class': ''
+            'clr_class': '',
+            'default_image': self.default_image
         })
         return context
 
@@ -161,6 +165,7 @@ class DynamicMultiSelect(ChoiceWidget):  # ChoiceWidget
     # id_for_label = ChoiceWidget.id_for_label
 
     def __init__(self, url='', placeholder=None, attrs=None, **kwargs):  # choices=(), # # ChoiceWidget
+        # self.limit = kwargs.pop('limit', None)
         if placeholder:
             attrs = attrs or {}
             attrs['placeholder'] = placeholder
@@ -186,6 +191,11 @@ class DynamicMultiSelect(ChoiceWidget):  # ChoiceWidget
 
     def value_from_datadict(self, data, files, name):
         return data.getlist(name)
+
+        # keys = data.getlist(name)
+        # if self.limit:
+        #     if len(keys) > self.limit: print('warn------')
+        # return keys
 
     def create_option(self, name, value, label, *args, **kwargs):
         options = super().create_option(name, value, label, *args, **kwargs)

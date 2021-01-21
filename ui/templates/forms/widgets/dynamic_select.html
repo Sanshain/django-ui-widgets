@@ -1,54 +1,63 @@
-
-
 <style>
-    .{{ widget.name }}_messages{
-        display: none;                
+    .{{ widget.name}}_messages {
+        display: none;
         color: red;
     }
-    .dynamic_select{
+
+    .dynamic_select {
         position: relative;
     }
 </style>
 
 
 <div class="dynamic_select">
-    <input
-        autocomplete="off"
-        id='dynamic_{{ widget.name }}_select'
-        type="text"     
-        list="list_{{ widget.name }}" 
+    <input autocomplete="off" id='dynamic_{{ widget.name }}_select' type="text" 
+        list="list_{{ widget.name }}"
         oninput="debounce({{ widget.name }}_dynamic_search, 500)(event)" 
         onchange="{{ widget.name }}_set(event)"
-        onmousedown="setTimeout(() => select(this), 25)"
-        onkeydown="nextFocus(event)"
+        onmousedown="setTimeout(() => select(this), 25)" 
+        onkeydown="nextFocus(event)" 
         {% include "django/forms/widgets/attrs.html" %} />
     <datalist id="list_{{ widget.name }}"></datalist>
     <span class="{{ widget.name }}_messages">Нет соединения с сервером</span>
 
-    <select name="{{ widget.name }}" style="opacity: 0; position: absolute; top: 0;"         
+    <select 
+        name="{{ widget.name }}" 
+        style="opacity: 0; position: absolute; top: 0;width:0;height: 0;" 
         {% include "forms/widgets/default_attrs.html" %}>
 
         {% for group_name, group_choices, group_index in widget.optgroups %}
             {% for option in group_choices %}
-                {% include "django/forms/widgets/select_option.html" with widget=option %}         
-            {% endfor %}        
-        {% endfor %}        
-
+                {% include "django/forms/widgets/select_option.html" with widget=option %}
+            {% endfor %}
+        {% endfor %}
     </select>
 </div>
 
 
 
-<script>    
+<script>
 
-    function nextFocus(event){
-        
-        if (event.keyCode == 9){    // tab
+    function nextFocus(event) {
+
+        if (event.keyCode == 9) {    // tab
 
             event.preventDefault();
-            var elems = [].slice.call(document.querySelectorAll('input, textarea'));
+
+            let dataList = event.target.nextElementSibling;
+            let options = [].slice.call(dataList.options);
+            if (event.target.value.length > 1 && !options.some(op => op.value == event.target.value)) {
+                let mtcOptions = options.filter(el => el.value.indexOf(event.target.value) >= 0);
+                if (mtcOptions.length) {
+                    event.target.value = mtcOptions[0].value;
+                    mtcOptions[0].selected = true;
+                }
+            }
+
+            // if (event.target.value) 
+            let elems = [].slice.call(document.querySelectorAll('input, textarea'));                   
             let target_index = elems.indexOf(event.target);
-            if (++target_index < elems.length){
+            if (++target_index < elems.length) {
 
                 elems[target_index].focus();
             }
@@ -58,7 +67,7 @@
     function debounce(f, ms) {
 
         let isCooldown = false;
-        return function() {
+        return function () {
             if (isCooldown) return;
 
             f.apply(this, arguments);
@@ -69,19 +78,22 @@
 
     }
 
-    (function dynamicSelectInitialize(){
+    /**
+     *   select emulation for the django form
+     */
+    (function dynamicSelectInitialize() {
 
-        let select = document.getElementsByName('{{ widget.name }}')[0];        
+        let select = document.getElementsByName('{{widget.name}}')[0];
         // for (widget of widgets)
         let options = select.querySelectorAll('option[selected]');
         let selected = options[options.length - 1];
         let value = selected.getAttribute('data-hint');
-        if (value){
-            document.getElementById('dynamic_{{ widget.name }}_select').value = value;
+        if (value) {
+            document.getElementById('dynamic_{{widget.name}}_select').value = value;
         }
     })();
 
-    // todo: select_set => {{ widget.name }}_set
+    // todo: select_set => {{widget.name}}_set
 
     /// кэширует ключи, которые уже были запрошены с сервера
     var cache_tag = []
@@ -92,16 +104,16 @@
         Делает запрос на сервер для подгрузки ключевых тегов
 
     */
-    async function {{ widget.name }}_dynamic_search(event){        
+    async function {{widget.name}}_dynamic_search(event){
 
         if (event.inputType === 'deleteContentBackward') {
-            
-            if (event.target.value.length == 0){
 
-                let select = document.getElementById("id_{{ widget.name }}");
+            if (event.target.value.length == 0) {
+
+                let select = document.getElementById("id_{{widget.name}}");
                 options = select.querySelectorAll('option')
                 for (const option of options) {
-                    
+
                     option.selected = false;
                 }
                 select.querySelector('option').selected = true;
@@ -110,30 +122,30 @@
             return;
         }
 
-        var dl = document.getElementById('list_{{ widget.name }}');
+        var dl = document.getElementById('list_{{widget.name}}');
         dl.nextElementSibling.style = "display:none";                           // скрываем сообщение об отсутствии соединения
 
-        if (event.target.value){
+        if (event.target.value) {
 
             if (cache_tag.indexOf(event.target.value) >= 0) return;
-            else{
+            else {
                 let base_url = '{{widget.url}}';
                 let cancat_char = base_url.indexOf('?') < 0 ? '?' : '&';
-                let response = await fetch('{{widget.url}}'+ cancat_char +'query=' + encodeURIComponent(event.target.value))
+                let response = await fetch('{{widget.url}}' + cancat_char + 'query=' + encodeURIComponent(event.target.value))
 
                 var data = [];
-                if (response.ok){
+                if (response.ok) {
                     cache_tag.push(event.target.value);
                     var data = await response.json();
                 }
-                else{
+                else {
                     // console.warn('error _search: ' + response.status);
                     // alert('нет соединения с сервером') 
-                    dl.nextElementSibling.style = "display:inline-block";                    
+                    dl.nextElementSibling.style = "display:inline-block";
                 }
 
-                for(let point of data){
-                    if (cache_id.indexOf(point.id) < 0){
+                for (let point of data) {
+                    if (cache_id.indexOf(point.id) < 0) {
 
                         option = document.createElement('option')
                         option.value = point.name
@@ -144,7 +156,7 @@
                         cache_id.push(point.id);
                     }
                 }
-               
+
             }
 
         }
@@ -155,31 +167,31 @@
     // all obsolete:
 
 
-    function {{ widget.name }}_set(event){ // onchoice
+    function {{widget.name}}_set(event){ // onchoice
 
         // add to select
         let select = document.querySelector('select[name="{{widget.name}}"]');  // document.getElementById('id_{{ widget.name }}'
         let input = document.getElementById('dynamic_{{ widget.name }}_select');
 
-        let option = select.querySelector('option[data-hint="'+input.value+'"]');
+        let option = select.querySelector('option[data-hint="' + input.value + '"]');
 
         // document.getElementById("list_{{ widget.name }}")
 
         // add to select
-        if (!option){
+        if (!option) {
 
-            option = document.getElementById("list_{{ widget.name }}").querySelector('option[data-hint="'+input.value+'"]');
+            option = document.getElementById("list_{{ widget.name }}").querySelector('option[data-hint="' + input.value + '"]');
             if (option) input.title = '';
             else {
-                input.title = 'нет такой подсветки';      
-                return;          
+                input.title = 'нет такой подсветки';
+                return;
             }
-            
+
             selected_option = option.cloneNode(true);
-            selected_option.selected = true;            
+            selected_option.selected = true;
             selected_option.value = selected_option.getAttribute('data-id')
             selected_option.innerText = selected_option.getAttribute('data-hint');      // optional
-            select.appendChild(selected_option);    
+            select.appendChild(selected_option);
         }
 
         // event.target.value = '';
@@ -187,4 +199,3 @@
 
     }    
 </script>
-

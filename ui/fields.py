@@ -51,12 +51,13 @@ class CustomImageField(ImageField):
     """
     widget = ImageWidget
 
-    def __init__(self, *, label_css_class: str = 'upload', back_image=None, onchange='upload', **kwargs):
+    def __init__(self, *, label_css_class: str = 'upload', back_image=None, onchange='upload_photo', **kwargs):
         """
         :param label_css_class: класс для лэйбла
         :param kwargs:
         :param onchange: имя соьытия обработки
         """
+        hint = kwargs.pop('hint', None)
         super(CustomImageField, self).__init__(**kwargs)
         if onchange:
             self.widget.attrs['onchange'] = f'{onchange}(event)'
@@ -65,6 +66,8 @@ class CustomImageField(ImageField):
         self.back_image = (settings.STATIC_URL + 'images/' + back_image) if back_image else None
         # self.widget.attrs['style'] = 'visibility:hidden'
         self.widget.attrs['style'] = 'width:0;height:0;padding:0;'
+        self.widget.default_image = back_image
+        self.widget.hint = hint
 
 
 class DynamicModelField(ModelChoiceField):

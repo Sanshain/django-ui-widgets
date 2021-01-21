@@ -8,25 +8,25 @@
     {{ widget.input_text }}:
 {% endif %}-->
 
-{% if widget.is_initial %}
-    <div id="container_for_id_image" class="img_preloader_jar">
-        <img src="{{ widget.value.url }}" class="img_preloader_field">
-        <div class="img_preloader_closer" onclick="imgpreloaderClose(event)"></div>
+
+{% load static %}
+
+
+
+
+{% if widget.is_initial and widget.value.url %}
+    <div id="container_for_id_image" class="img_preloader_jar">        
+            <img src="{{ widget.value.url }}" class="img_preloader_field"/>
+            <div class="img_preloader_closer" onclick="remove_photo(event)" title="удалить"></div>
     </div>
 {% endif %}
 <input type="{{ widget.type }}" name="{{ widget.name }}"{% include "django/forms/widgets/attrs.html" %}>
 
 
-
-
-
 <script>
     HTMLElement.prototype.setStyle = function(styles){
         
-        for(let key in styles){
-            
-            this.style[key] = styles[key];
-        }
+        for(let key in styles) this.style[key] = styles[key];
     }
 
     function createContainer(target){
@@ -46,20 +46,14 @@
         img.style.transition = '0.5s';         
 
         container.img = img;
-        container.close = closeCreate(target);
+        container.close = createRemoveButtn(target);
         container.appendChild(container.img);   
         container.appendChild(container.close);   
 
         return container;
     }
 
-    function imgpreloaderClose(event){
-        target = document.querySelector('#id_{{ widget.name }}')
-        target.value = null;
-        upload({target:target}); 
-    }
-
-    function closeCreate(target){
+    function createRemoveButtn(target) {
         let close = document.createElement('div')
         close.setStyle({
             position: 'absolute',
@@ -71,14 +65,27 @@
             right: '1.5em',
             cursor: 'pointer'
         })
-        close.onclick = imgpreloaderClose;
+        close.onclick = remove_photo;
         return close;
+    }    
+
+
+
+    function remove_photo(event){
+        
+        // event.stopPropagation();
+        // event.preventDefault();
+        target = document.querySelector('#id_{{ widget.name }}');
+        target.value = null;
+        upload_photo({target:target}); 
     }
 
-    function upload(event){        
+    function upload_photo(event){        
 
         let container_id = 'container_for_' + event.target.id;
-        var container = (document.getElementById(container_id) || createContainer(event.target)).querySelector('img');
+        var container = (document.getElementById(container_id) || createContainer(event.target)).querySelector(
+            'img'
+        );
                         
 
         if (!event.target.files[0]) {    
@@ -113,29 +120,84 @@
 </script>
 
 
-
-
 <style>
-    .img_preloader_jar{
-        padding: 15px; 
-        position: relative; 
-        width: max-content; 
+    .img_preloader_jar {
+        padding: 15px;
+        position: relative;
+        width: max-content;
         margin: auto;
     }
-    .img_preloader_field{
-        height: 200px; 
-        border-radius: 15px; 
+
+    .img_preloader_field {
+        height: 200px;
+        border-radius: 15px;
         transition: 0.5s;
     }
-    .img_preloader_closer{
-        position: absolute; 
-        width: 1em; 
-        height: 1em; 
-        background-color: red; 
-        border-radius: 20px; 
-        top: 1.5em; 
-        right: 1.5em; 
-        cursor: pointer; 
+
+    .img_preloader_closer {
+        position: absolute;
+        width: 1em;
+        height: 1em;
+        background-color: red;
+        opacity: .8;
+        border-radius: 20px;
+        top: 1.5em;
+        right: 1.5em;
+        cursor: pointer;
         display: block;
+        transition: 1s;
+
+        line-height: 1em;
+        color: lightblue;
+        transform: rotate(45deg);
     }
+
+    .img_preloader_closer:hover {
+        transform: rotate(45deg) scale(1.1);
+        opacity: 1;
+        background-color: orangered;
+    }
+
+/* {% if widget.default_image %}  */
+    label[for="id_{{ widget.name }}"] {
+        background: url("{% get_static_prefix %}{{ widget.default_image }}") no-repeat;
+        width: 2em;
+        height: 2em;
+        background-size: contain;
+        color: transparent;
+        cursor: pointer;
+        /* transition: opacity 1s, transform 1s; */
+        transition: 1s;
+        transform: scale(.9);
+        opacity: 0.3;        
+    }
+
+    label[for="id_{{ widget.name }}"]:hover {
+        opacity: 1;
+        transform: scale(1);
+    }
+    
+    label[for="id_{{ widget.name }}"]::after{
+        position: absolute;
+        content: '{{hint}}';
+        top: .5em;
+        left: 0px;
+        min-width: 10em;        
+        height: 2em;
+        opacity: 0;
+        transition: 1s;
+        z-index: 5;
+        color: gray;
+        font-size: small;
+    }
+    label[for="id_{{ widget.name }}"]:hover:after{
+        opacity: .5;
+        left: 2em;
+    }
+/* {% else %} */
+    label[for="id_{{ widget.name }}"] {
+        cursor: pointer;
+        color: gray;
+    }
+/* {% endif %} */
 </style>

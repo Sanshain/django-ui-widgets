@@ -3,7 +3,8 @@
 
     {% for group_name, group_choices, group_index in widget.optgroups %}
         {% for option in group_choices %}            
-            <div class="labels_tag" id="{{ option.in_swarm_id }}">
+            {% comment %} <div class="labels_tag" id="{{ option.in_swarm_id }}"> {% endcomment %}
+            <div class="{{ widget.name }}_tag" id="{{ option.in_swarm_id }}">
                 {{ option.label }}
                 <div class="close" onclick="onRemove(event)">+</div>
             </div>                     
@@ -12,12 +13,13 @@
 
 </div>
 <input type="text" value="" list="list_{{ widget.name }}" 
-    oninput="debounce(_search, 500)(event)" 
+    oninput="debounce(_search, 500)(event)"     
     onchange="_append(event)" {% include "django/forms/widgets/attrs.html" %}/>
 <datalist id="list_{{ widget.name }}"></datalist>
 <span class="{{ widget.name }}_messages">Нет соединения с сервером</span>
-<select name="{{ widget.name }}" multiple style="display: none;"     
-    {% include "forms/widgets/default_attrs.html" %}>
+<select name="{{ widget.name }}" multiple 
+        style="opacity: 0;display: block;height: 0;margin: auto;margin-top: -2px;top: -2em;z-index: -1;"     
+        {% include "forms/widgets/default_attrs.html" %}>
 
     {% for group_name, group_choices, group_index in widget.optgroups %}
         {% for option in group_choices %}
@@ -57,8 +59,14 @@
         Делает запрос на сервер для подгрузки ключевых тегов
     */
     async function _search(event){        
-
+        
+        
         if (event.inputType === 'deleteContentBackward') return;
+        if (event.inputType === "insertReplacementText") {
+            // on chrome its undefined
+            event.target.dispatchEvent(new Event('change'));
+            return;
+        }
 
         var dl = document.getElementById('list_{{ widget.name }}');
         dl.nextElementSibling.style = "display:none";
@@ -127,7 +135,7 @@
 
     function _append(event){ // onchoice
 
-        var tag_swarm = document.getElementById('selected_{{ widget.name }}');
+        var tag_swarm = document.getElementById('selected_{{ widget.name }}');        
         let flag = tag_swarm.querySelector(
             '#' + '{{ widget.name }}_tag_' + replace_duty_chars(event.target.value));
 
@@ -169,6 +177,12 @@
 
 
 <style>
+    input[list="list_{{ widget.name }}"]{
+        font-size: medium;
+/* {% if widget.optgroups %}         */
+        margin-top: 1em;
+/* {% endif %} */
+    }
     .tag_swarm, .tag_swarm + input{
         width: 500px;
         box-sizing: border-box;
