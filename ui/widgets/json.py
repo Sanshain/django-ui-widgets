@@ -115,7 +115,7 @@ class JSONViewWidget(forms.Widget):
         attrs = self.build_attrs(self.attrs, {
             "type": 'checkbox',
             "class": " ".join(classes),
-            "onclick": "this.previousSibling.value=!JSON.parse(this.previousSibling.value)",
+            "onclick": "self.previousSibling.value=!JSON.parse(self.previousSibling.value)",
         })
         hidden_name = "%s%s%s" % (name, self.separator, key)
         attrs['value'] = utils.encoding.force_text(value)

@@ -103,7 +103,7 @@ class CreatePerson(HyperModelForm):
                 attrs={
                     'accept': "image/jpeg,image/png",
                     'style': 'visibility:hidden',
-                    'onchange': 'file_upload(this, event)'}),  # 'style':  display:none
+                    'onchange': 'file_upload(self, event)'}),  # 'style':  display:none
         }
         error_messages = {
             NON_FIELD_ERRORS: {
