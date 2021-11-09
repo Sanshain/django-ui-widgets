@@ -115,7 +115,7 @@ Customized *DateInput* widget:
 
 ## JSONViewWidget
 
-**JSONViewWidget** - widget for displaying the content of `model.JSONField` (a field officially added in django 3.1). Designed specifically for use in the admin interface. Usage example:
+**JSONViewWidget** - widget for displaying the content of `model.JSONField` (a field officially added in django 3.1). Designed specifically for usage inside admin interface. Usage example:
 
 ```python
 class SkillAdmin(admin.ModelAdmin):
