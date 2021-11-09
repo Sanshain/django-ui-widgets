@@ -1,6 +1,18 @@
 # django-ui-widgets
 
-This is a plugin for django consisting of improved widgets and fields with a relevant view interface and advanced features based on some django widgets. Some of them:
+This is an add-on for django, consisting of improved widgets and fields with an expanded viewing interface and advanced features. Django widgets are taken as a basis.
+
+### Package contains
+
+- [DynamicMultiSelect](#dynamicmultiselect)
+- [DynamicSelect](#dynamicselect)
+- [DynamicModelField](#dynamicmodelfield)
+- [CustomImageField](#customimagefield)
+- [AutoUrlInput](#autourlinput)
+- [JSONViewWidget](#jsonviewwidget)
+- [DateWidget](#datewidget)
+- [DivHyperModelForm](#divhypermodelform)
+
 
 ## DynamicMultiSelect
 
@@ -94,6 +106,13 @@ Replacement for URLInput. Adds an automatic 'https://' extension at the beginnin
 **Attention!**
 for this widget to work correctly, you must explicitly specify links to media resources in the template after the form, such as: `{{ form.media }}`
 
+
+## DateWidget
+
+Customized *DateInput* widget:
+
+![alt JSONViewWidget](./doc/time.PNG)
+
 ## JSONViewWidget
 
 **JSONViewWidget** - widget for displaying the content of `model.JSONField` (a field officially added in django 3.1). Designed specifically for use in the admin interface. Usage example:
@@ -107,6 +126,8 @@ class SkillAdmin(admin.ModelAdmin):
         },
     }
 ```
+
+![alt JSONViewWidget](./doc/json.PNG)
 
 `JSONViewWidget` inspired by [SplitJSONWidget](https://github.com/abbasovalex/django-SplitJSONWidget-form). But it has the following features that are missing in `SplitJSONWidget`, currently:
 
@@ -190,19 +211,41 @@ in template:
 in above sample usage `{{form.media}}` is optionally like standart form
 
 
-# installation
+
+
+# Installation:
 
 There are two steps:
-- First step: install through 
+- First step: install through *pip* utility from one of the following sources:
+    - *pypi*
+    ```
+    pip install django-ui-widgets
+    ```
 
+    - *github* (*latest version*) (*recomended*)
     ```
     pip install git+http://github.com/Sanshain/django-ui-widgets
     ```
-- Second step: add 'django-ui-widgets' to `INSTALLED_APPS` inside `settings.py` of your project
+- Second step: add **"ui"** app to `INSTALLED_APPS` inside `settings.py` of your project:
+
+   ```py
+   INSTALLED_APPS = [
+    'django.contrib.admin',
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.messages',
+    'django.contrib.staticfiles',
+    
+    #...
+    
+    'ui',
+    
+    #...
+   ]
+   ```
 
 Finish
-
-
 
 
 
