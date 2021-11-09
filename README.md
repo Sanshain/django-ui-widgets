@@ -1,6 +1,6 @@
 # django-ui-widgets
 
-This is a plugin for django consisting of improved widgets and fields with a relevant view interface and advanced features based on some django widgets. Some of them:
+This is an add-on for django, consisting of improved widgets and fields with an expanded viewing interface and advanced features. Django widgets are taken as a basis.
 
 ### Package contains
 
