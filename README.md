@@ -2,6 +2,12 @@
 
 This is a plugin for django consisting of improved widgets and fields with a relevant view interface and advanced features based on some django widgets. Some of them:
 
+### Package contains
+
+- [DynamicMultiSelect](#dynamicmultiselect)
+- [DynamicSelect](#dynamicselect)
+- 
+
 ## DynamicMultiSelect
 
 This is a replacement for `SelectMultiple`. In fact, it is an analog of django-autocomplete without using jquery. Usage:
