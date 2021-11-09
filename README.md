@@ -6,7 +6,13 @@ This is a plugin for django consisting of improved widgets and fields with a rel
 
 - [DynamicMultiSelect](#dynamicmultiselect)
 - [DynamicSelect](#dynamicselect)
-- 
+- [DynamicModelField](#dynamicmodelfield)
+- [CustomImageField](#customimagefield)
+- [AutoUrlInput](#autourlinput)
+- [JSONViewWidget](#jsonviewwidget)
+- [DateWidget](#datewidget)
+- [DivHyperModelForm](#divhypermodelform)
+
 
 ## DynamicMultiSelect
 
@@ -99,6 +105,13 @@ Replacement for URLInput. Adds an automatic 'https://' extension at the beginnin
 
 **Attention!**
 for this widget to work correctly, you must explicitly specify links to media resources in the template after the form, such as: `{{ form.media }}`
+
+
+## DateWidget
+
+Customized *DateInput* widget:
+
+![alt JSONViewWidget](./doc/time.PNG)
 
 ## JSONViewWidget
 
@@ -198,19 +211,41 @@ in template:
 in above sample usage `{{form.media}}` is optionally like standart form
 
 
-# installation
+
+
+# Installation:
 
 There are two steps:
-- First step: install through 
+- First step: install through *pip* utility from one of the following sources:
+    - *pypi*
+    ```
+    pip install django-ui-widgets
+    ```
 
+    - *github* (*latest version*) (*more recomended*)
     ```
     pip install git+http://github.com/Sanshain/django-ui-widgets
     ```
-- Second step: add 'django-ui-widgets' to `INSTALLED_APPS` inside `settings.py` of your project
+- Second step: add **"ui"** app to `INSTALLED_APPS` inside `settings.py` of your project:
+
+   ```py
+   INSTALLED_APPS = [
+    'django.contrib.admin',
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.messages',
+    'django.contrib.staticfiles',
+    
+    #...
+    
+    'ui',
+    
+    #...
+   ]
+   ```
 
 Finish
-
-
 
 
 
