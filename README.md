@@ -108,6 +108,8 @@ class SkillAdmin(admin.ModelAdmin):
     }
 ```
 
+![alt JSONViewWidget](./doc/json.PNG)
+
 `JSONViewWidget` inspired by [SplitJSONWidget](https://github.com/abbasovalex/django-SplitJSONWidget-form). But it has the following features that are missing in `SplitJSONWidget`, currently:
 
 - adding and removing notes of the tree first level
