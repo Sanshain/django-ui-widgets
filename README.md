@@ -222,7 +222,7 @@ There are two steps:
     pip install django-ui-widgets
     ```
 
-    - *github* (*latest version*) (*more recomended*)
+    - *github* (*latest version*) (*recomended*)
     ```
     pip install git+http://github.com/Sanshain/django-ui-widgets
     ```
