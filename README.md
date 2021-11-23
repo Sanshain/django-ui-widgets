@@ -1,8 +1,8 @@
 # django-ui-widgets
 
-This is an add-on for django, consisting of improved widgets and fields with an expanded viewing interface and advanced features. Django widgets are taken as a basis.
+Add-on for the **django framework** consisting of improved widgets and fields with an expanded viewing interface and advanced features. Django widgets are taken as a basis.
 
-### Package contains
+### Package contains:
 
 - [DynamicMultiSelect](#dynamicmultiselect)
 - [DynamicSelect](#dynamicselect)
