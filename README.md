@@ -1,8 +1,8 @@
 # django-ui-widgets
 
-This is an add-on for django, consisting of improved widgets and fields with an expanded viewing interface and advanced features. Django widgets are taken as a basis.
+Add-on for the **django framework** consisting of improved widgets and fields with an expanded viewing interface and advanced features. Django widgets are taken as a basis.
 
-### Package contains
+### Package contains:
 
 - [DynamicMultiSelect](#dynamicmultiselect)
 - [DynamicSelect](#dynamicselect)
@@ -16,7 +16,9 @@ This is an add-on for django, consisting of improved widgets and fields with an 
 
 ## DynamicMultiSelect
 
-This is a replacement for `SelectMultiple`. In fact, it is an analog of django-autocomplete without using jquery. Usage:
+This is a replacement for `SelectMultiple`. In fact, it is an analog of django-autocomplete without using jquery.
+
+Usage example:
 
 ```python
 from ui.widgets import DynamicMultiSelect
@@ -38,7 +40,7 @@ class ProfileUpdateForm(ModelForm):
             self.fields['labels'].queryset = SkillLabel.objects.filter(profile=self.instance)
             self.fields['labels'].widget.choices = ModelChoiceIterator(self.fields['labels'])
 ```
-In the example above, `tag_filter` is a name of view url, that consists of filter returning `JsonResponse` object with a list of `dict`s contained `id` and `name` keys:
+In example above `tag_filter` is name of the view url, which consists of filter returning `JsonResponse` object with a list of `dict`s contained `id` and `name` keys:
 
 ```python
 def tag_filter(request: HttpRequest):
@@ -115,7 +117,7 @@ Customized *DateInput* widget:
 
 ## JSONViewWidget
 
-**JSONViewWidget** - widget for displaying the content of `model.JSONField` (a field officially added in django 3.1). Designed specifically for use in the admin interface. Usage example:
+**JSONViewWidget** - widget for displaying the content of `model.JSONField` (a field officially added in django 3.1). Designed specifically for usage inside admin interface. Usage example:
 
 ```python
 class SkillAdmin(admin.ModelAdmin):
