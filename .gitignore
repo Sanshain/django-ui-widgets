@@ -9,3 +9,5 @@ __venv3/
 django_ui_widgets.egg-info/
 dist/
 *.cmd
+
+older_dist/
